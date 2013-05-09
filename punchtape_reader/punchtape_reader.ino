@@ -36,7 +36,7 @@
 //
 
 #define CHANNELS 9
-int n_sides[CHANNELS] = { 27,  0,  1,  2,  3,  4,  5,  6,  7 };
+int n_sides[CHANNELS] = { 27,  0,  1,  2,  3,  4,  5,  7,  8 };
 int p_sides[CHANNELS] = { 26, 25, 24, 23, 22, 21, 20, 19, 18 };
 
 void setup()
@@ -53,26 +53,42 @@ void loop()
     digitalWrite(n_sides[i],HIGH);
     digitalWrite(p_sides[i],LOW);
   }
+  
+  int v[CHANNELS];
+  for (int i = 0; i < CHANNELS; i++) {
+    v[i] = -1;
+  }
 
+  // small delay for charge
   delayMicroseconds(100);
+
   // Isolate the pin 2 end of the diode
   for (int i = 0; i < CHANNELS; i++) {
     pinMode(n_sides[i],INPUT);
     digitalWrite(n_sides[i],LOW);  // turn off internal pull-up resistor
   }
+
   int j;
   // Count how long it takes the diode to bleed back down to a logic zero
-  for ( j = 0; j < 30000; j++) {
-    //for (int i = 0; i < CHANNELS; i++) {
-      if ( digitalRead(n_sides[3])==0) break;
-    //}
+  for ( j = 0; j < 200; j++) {
+    delayMicroseconds(7);
+    for (int i = 0; i < CHANNELS; i++) {
+      if ( v[i] == -1 && digitalRead(n_sides[i])==0) v[i] = j;
+    }
   }
+
+    for (int i = 0; i < CHANNELS; i++) {
+      if ( v[i] == -1 ) v[i] = 200;
+    }
+
   // You could use 'j' for something useful, but here we are just using the
   // delay of the counting.  In the dark it counts higher and takes longer, 
   // increasing the portion of the loop where the LED is off compared to 
   // the 1000 microseconds where we turn it on.
-
-  Serial.println(j);
+  for (int i = 0; i < CHANNELS; i++) {
+    Serial.print(v[i] > 100?'X':'O');
+  }
+  Serial.println();
   // Turn the light on for 1000 microseconds
   //digitalWrite(p_sides[i],HIGH);
   //digitalWrite(n_sides[i],LOW);
