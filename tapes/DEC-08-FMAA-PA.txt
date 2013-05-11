@@ -1,0 +1,34 @@
+
+
+/DIGITAL-8-9-F
+/SQUARE ROOT ....... ENTER WITH SQUARE IN AC
+/                    EXITS WITH ROOT IN AC
+/          ODD INTEGER METHOD
+SQRT,     0
+          DCA SQR1              /SAVE INPUT
+          DCA ROOT              /0 TO ANSWER
+          TAD SQR2              /-1; FIRST ATTEMPT
+SQX,      DCA SQRD
+          TAD SQR1              /COMPARE INPUT
+          CLL                   /WITH THIS TRY
+          TAD SQRD
+          SNL
+          JMP SQRF              /TEST>INPUT; ALL DONE
+          ISZ ROOT              /ADD +1 TO ANSWER
+          DCA SQR1              /INPUT=INPUT-TEST
+          TAD SQRD
+          TAD SQR3              /TEST=TEST-2
+          JMP SQX               /CONTINUE
+SQRF,     CLA
+          TAD ROOT              /FETCH ANSWER
+          JMP I SQRT            /EXIT
+SQR1,     0
+SQR2,     -1
+SQR3,     -2
+SQRD,     0
+ROOT,     0
+
+$
+
+
+
